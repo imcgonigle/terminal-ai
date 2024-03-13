@@ -1,8 +1,8 @@
 # Terminal AI
 
-Terminal AI is a command-line interface (CLI) tool that allows you to utilize the AI models provided by OpenAI in a friendly way. It allows you to ask any kind of questions and generate contents. This tool is specifically implemented to communicate with GPT-4, one of OpenAI's models.
+![Banner](assets/banner.png)
 
-![Banner](http://url-of-banner-img-if-any)
+Terminal AI is a command-line interface (CLI) tool that allows you to utilize the AI models provided by OpenAI in a friendly way. It allows you to ask any kind of questions and generate contents. This tool is specifically implemented to communicate with GPT-4, one of OpenAI's models.
 
 ## Prerequisites
 
