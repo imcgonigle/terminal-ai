@@ -1,10 +1,11 @@
 #!/usr/bin/env node
-require("dotenv").config();
-const fs = require("fs");
-const path = require("path");
-const OpenAI = require("openai");
-const figlet = require("figlet");
-const { Command, Option, Argument } = require("commander");
+import "dotenv/config";
+import fs from "fs";
+import path from "path";
+import OpenAI from "openai";
+import figlet from "figlet";
+import { Command, Option } from "commander";
+import ora from "ora";
 
 async function speak(input, options) {
   if (options.file) {
@@ -12,14 +13,16 @@ async function speak(input, options) {
   }
   const output = options.output;
   const speechFile = path.resolve(output ? output : "./speech.mp3");
+  const spinner = ora("Saving speech to file").start();
   const mp3 = await openai.audio.speech.create({
     model: options.hd ? "tts-1-hd" : "tts-1",
     voice: options.voice,
     input: input,
   });
-  console.log(speechFile);
   const buffer = Buffer.from(await mp3.arrayBuffer());
   await fs.promises.writeFile(speechFile, buffer);
+  spinner.stop();
+  console.log(speechFile);
 }
 
 const openai = new OpenAI({
@@ -45,11 +48,13 @@ async function askGPT(question, options) {
   });
 
   if (options.output) {
+    const spinner = ora("Saving response to file").start();
     const file = fs.createWriteStream(options.output);
     for await (const chunk of stream) {
       file.write(chunk.choices[0]?.delta?.content || "");
     }
     file.end();
+    spinner.stop();
     console.log(`The response has been saved to ${options.output}`);
     return;
   } else {
