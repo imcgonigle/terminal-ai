@@ -7,28 +7,33 @@ import figlet from "figlet";
 import { Command, Option } from "commander";
 import ora from "ora";
 
+const openai = new OpenAI({
+  apiKey: process.env.OPENAI_API_KEY,
+  organization: process.env.OPENAI_ORG_ID,
+});
+
 async function speak(input, options) {
   if (options.file) {
     input = fs.readFileSync(options.file, "utf8");
   }
+
   const output = options.output;
   const speechFile = path.resolve(output ? output : "./speech.mp3");
+
   const spinner = ora("Saving speech to file").start();
+
   const mp3 = await openai.audio.speech.create({
     model: options.hd ? "tts-1-hd" : "tts-1",
     voice: options.voice,
     input: input,
   });
-  const buffer = Buffer.from(await mp3.arrayBuffer());
-  await fs.promises.writeFile(speechFile, buffer);
-  spinner.stop();
-  console.log(speechFile);
-}
 
-const openai = new OpenAI({
-  apiKey: process.env.OPENAI_API_KEY,
-  organization: process.env.OPENAI_ORG_ID,
-});
+  const buffer = Buffer.from(await mp3.arrayBuffer());
+
+  await fs.promises.writeFile(speechFile, buffer);
+
+  spinner.succeed(`The audio has been saved to ${speechFile}`);
+}
 
 async function askGPT(question, options) {
   let prompt;
@@ -50,18 +55,52 @@ async function askGPT(question, options) {
   if (options.output) {
     const spinner = ora("Saving response to file").start();
     const file = fs.createWriteStream(options.output);
+
     for await (const chunk of stream) {
       file.write(chunk.choices[0]?.delta?.content || "");
     }
+
     file.end();
-    spinner.stop();
-    console.log(`The response has been saved to ${options.output}`);
+
+    spinner.succeed(`The response has been saved to ${options.output}`);
     return;
   } else {
     for await (const chunk of stream) {
       process.stdout.write(chunk.choices[0]?.delta?.content || "");
     }
   }
+}
+
+async function imagine(prompt, options) {
+  const filePath = options.output ? options.output : "./image.png";
+
+  if (options.file) {
+    const fileContent = fs.readFileSync(options.file, "utf8");
+    prompt = `Please read this input file as context and generate an image for the following prompt:\n\n${fileContent}\n\nPrompt: ${prompt}`;
+  }
+
+  const spinner = ora("Generating images").start();
+  const image = await openai.images.generate({
+    model: "dall-e-3",
+    prompt,
+    quality: options.hd ? "hd" : "standard",
+    response_format: "b64_json",
+  });
+
+  spinner.info("Downloading the image");
+
+  fs.writeFile(filePath, image.data[0].b64_json, "base64", function (err) {
+    if (err) {
+      spinner.error("An error occurred while writing the file");
+      console.log(err);
+    } else {
+      spinner.succeed("The images have been generated");
+
+      if (options.verbose) {
+        console.log(image.data[0].revised_prompt);
+      }
+    }
+  });
 }
 
 const program = new Command();
@@ -101,6 +140,18 @@ program
   )
   .action((text, options) => {
     speak(text, options);
+  });
+
+program
+  .command("imagine")
+  .description("Generate images from text")
+  .argument("<prompt>", "The prompt to generate images from")
+  .option("-o, --output <output>", "The file to save the image to")
+  .option("-f, --file <file>", "The file to prompt the AI about")
+  .option("-v, --verbose", "Verbose output")
+  .option("--hd", "Use the HD model")
+  .action((prompt, options) => {
+    imagine(prompt, options);
   });
 
 console.log(figlet.textSync("Terminal AI", { horizontalLayout: "full" }));
