@@ -1,6 +1,6 @@
 # Terminal AI
 
-![Banner](assets/banner.png)
+<img src="./assets/banner.png" width="400" />
 
 Terminal AI is a command-line interface (CLI) tool that allows you to utilize the AI models provided by OpenAI in a friendly way. It allows you to ask any kind of questions and generate contents. This tool is specifically implemented to communicate with GPT-4, one of OpenAI's models.
 
