@@ -3,8 +3,7 @@ import fs from "fs";
 import path from "path";
 import OpenAI from "openai";
 import figlet from "figlet";
-import { Command, Option } from "commander";
-import ora from "ora";
+import { Command } from "commander";
 
 import { config } from './config.js'
 
@@ -103,6 +102,11 @@ async function imagine(prompt, options) {
     }
   });
 }
+import setupSpeak from "./src/speak.js";
+import setupAsk from "./src/ask.js";
+import setupImagine from "./src/imagine.js";
+import setupTranscribe from "./src/transcribe.js";
+import setupChat from "./src/chat.js";
 
 const program = new Command();
 
@@ -111,49 +115,11 @@ program
   .description("A CLI tool to gererate content using various AI models")
   .version("0.1.0");
 
-program
-  .command("ask")
-  .description("Ask OpenAI's GPT-4 a question")
-  .argument("<question>", "The questions you want to ask the AI model")
-  .option("-o, --output <output>", "Output the response to a file")
-  .option("-f, --file <file>", "A file to ask the question about")
-  .option("-j, --json", "Output the response in JSON format")
-  .addOption(
-    new Option("-m, --model <model>", "The model to use")
-      .choices(["gpt-4", "gpt-3.5-turbo"])
-      .default("gpt-4")
-  )
-  .action((question, options) => {
-    askGPT(question, options);
-  });
-
-program
-  .command("speak")
-  .description("Generate speech from text")
-  .argument("<text>", "The text you want to convert to speech")
-  .option("-o, --output <output>", "The file to save the speech to")
-  .option("-f, --file <file>", "The file to read the text from")
-  .option("-h, --hd", "Use the HD voice model")
-  .addOption(
-    new Option("-v, --voice <voice>", "The voice to use")
-      .choices(["alloy", "echo", "fable", "onyx", "nova", "shimmer"])
-      .default("alloy")
-  )
-  .action((text, options) => {
-    speak(text, options);
-  });
-
-program
-  .command("imagine")
-  .description("Generate images from text")
-  .argument("<prompt>", "The prompt to generate images from")
-  .option("-o, --output <output>", "The file to save the image to")
-  .option("-f, --file <file>", "The file to prompt the AI about")
-  .option("-v, --verbose", "Verbose output")
-  .option("--hd", "Use the HD model")
-  .action((prompt, options) => {
-    imagine(prompt, options);
-  });
+setupAsk(program);
+setupSpeak(program);
+setupImagine(program);
+setupTranscribe(program);
+setupChat(program);
 
 console.log(figlet.textSync("Terminal AI", { horizontalLayout: "full" }));
 
