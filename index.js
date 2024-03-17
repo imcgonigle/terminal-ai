@@ -10,6 +10,7 @@ import setupAsk from "./src/ask.js";
 import setupImagine from "./src/imagine.js";
 import setupTranscribe from "./src/transcribe.js";
 import setupChat from "./src/chat.js";
+import setupExplain from "./src/explain.js";
 
 const program = new Command();
 
@@ -23,6 +24,7 @@ setupSpeak(program);
 setupImagine(program);
 setupTranscribe(program);
 setupChat(program);
+setupExplain(program);
 
 console.log(
   gradient.retro(figlet.textSync("Terminal AI", { horizontalLayout: "full" }))
