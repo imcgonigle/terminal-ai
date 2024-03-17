@@ -3,6 +3,8 @@ import fs from "fs";
 import path from "path";
 import OpenAI from "openai";
 import figlet from "figlet";
+import gradient from "gradient-string";
+
 import { Command } from "commander";
 
 import { config } from './config.js'
@@ -121,6 +123,8 @@ setupImagine(program);
 setupTranscribe(program);
 setupChat(program);
 
-console.log(figlet.textSync("Terminal AI", { horizontalLayout: "full" }));
+console.log(
+  gradient.retro(figlet.textSync("Terminal AI", { horizontalLayout: "full" }))
+);
 
 program.parse();
