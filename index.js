@@ -1,6 +1,8 @@
 #!/usr/bin/env node
 import "dotenv/config";
 import figlet from "figlet";
+import gradient from "gradient-string";
+
 import { Command } from "commander";
 
 import setupSpeak from "./src/speak.js";
@@ -22,6 +24,8 @@ setupImagine(program);
 setupTranscribe(program);
 setupChat(program);
 
-console.log(figlet.textSync("Terminal AI", { horizontalLayout: "full" }));
+console.log(
+  gradient.retro(figlet.textSync("Terminal AI", { horizontalLayout: "full" }))
+);
 
 program.parse();
