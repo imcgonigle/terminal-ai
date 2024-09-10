@@ -4,7 +4,7 @@
   <img src="./assets/banner.png" width="400" />
 </p>
 
-Terminal AI is a command-line interface (CLI) tool that allows you to utilize the AI models provided by OpenAI in a friendly way. It allows you to ask any kind of questions and generate contents. This tool is specifically implemented to communicate with GPT-4, one of OpenAI's models.
+Terminal AI is a command-line interface (CLI) tool that allows you to utilize the AI models provided by OpenAI in an easy to use way. It allows you to ask any kind of questions and generate contents straight from the terminal. This tool is specifically implemented to communicate with GPT-4, one of OpenAI's models.
 
 ## Prerequisites
 
@@ -24,27 +24,36 @@ OPENAI_API_KEY={your-api-key}
 OPENAI_ORG_ID={your-org-id}
 ```
 
+### Installing Globally
+
+Run `npm install -g` from the terminal-ai root directory. This makes the `terminal-ai` command available anywhere.
+
+*TIP:* I like to set an alias in my .zshrc like so: `alias ai="terminal-ai"` so I don't have to type out "terminal-ai" every time.
+
 ## Usage
 
+You can run `terminal-ai` without any additional arguments to get a list of available sub commands.
+
+### ask
+The `ask` subcommand allows you to ask terminal-ai a question and recieve an answer.
+
 ```bash
-#!/usr/bin/env node
-node index.js ask "What is the meaning of life?" -o output.txt
+terminal-ai ask "What is the meaning of life?" -o output.txt
 ```
 
 This will ask the question "What is the meaning of life?" to the AI model and output the response to the output.txt file.
 
 ```bash
-node index.js ask "What is the meaning of life?" -f input.txt
+terminal-ai ask "What is the meaning of life?" -f input.txt
 ```
 
 This will read the input.txt file and ask a question based on it.
 
-## Features
+### imagine
+The `imagine` subcommand can be used to generate images from a text prompt.
 
-- Ask question to OpenAI's GPT-4 model right from your terminal
-- Able to read files and ask question based on them
-- Able to output the responses to a file
-- Stream the responses in console realtime
+### speak
+The `speak` subcommand allows you to generate audio from text
 
 ## Commands
 
@@ -53,8 +62,9 @@ This will read the input.txt file and ask a question based on it.
   - `-f, --file <file>`: An input file to ask the question about
 
 ```bash
-node index.js ask "What is the meaning of life?" -o output.txt -f input.txt
+terminal-ai ask "What is the meaning of life?" -o output.txt -f input.txt
 ```
 
 -----
-Hope this tool becomes beneficial to your AI projects.
+I hope you find this tool beneficial to your day to day work.
+
