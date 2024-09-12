@@ -4,20 +4,23 @@ import chalk from "chalk";
 import { Option } from "commander";
 
 import openai from "./utils/openai.js";
-import { experts } from "./config/experts.js";
+import { personas } from "./config/personas.js";
 
 async function chat(options) {
+  const { persona } = options;
+  const assitantPrompt =
+    chalk.blue("AI ") + chalk.yellow(`(${persona ? persona : "Assistant"}):`);
   let systemPrompt = "You are a helpful assistant.";
 
-  if (options.expert) {
-    systemPrompt = experts.find(
-      (expert) => expert.name === options.expert
+  if (options.persona) {
+    systemPrompt = personas.find(
+      (persona) => persona.name === options.persona
     ).systemPrompt;
   }
 
   const messages = [{ role: "system", content: systemPrompt }];
 
-  console.log(chalk.blue("Assistant:"), "How can I help you today?");
+  console.log(assitantPrompt, "How can I help you today?");
 
   if (options.output) {
     function writeArrayToFile() {
@@ -56,7 +59,7 @@ async function chat(options) {
       stream: true,
     });
 
-    process.stdout.write(chalk.blue("Assistant: "));
+    process.stdout.write(assitantPrompt + " ");
 
     let response = "";
 
@@ -79,9 +82,9 @@ export default function addChatToProgram(program) {
     .option("-o, --output <output>", "Output the chat to a file in JSON format")
     .addOption(
       new Option(
-        "-e --expert <expert>",
-        "The expert role the AI should take"
-      ).choices(experts.map((expert) => expert.name))
+        "-p --persona <persona>",
+        "The persona the AI should take"
+      ).choices(personas.map((persona) => persona.name))
     )
     .action((options) => {
       chat(options);
