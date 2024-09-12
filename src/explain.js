@@ -5,20 +5,19 @@ import { Option } from "commander";
 
 import openai from "./utils/openai.js";
 
-async function explain(filePath, question, options) {
+async function summarize(filePath, options) {
   let prompt;
 
   const fileContent = fs.readFileSync(filePath, "utf8");
 
-  prompt = `Please read this input file and respond to the following prompt:\n\n${fileContent}\n\nPrompt: ${question}`;
-
+  prompt = `Please read this file and summarize the contents:\n\n${fileContent}\n\n`;
   const stream = await openai.chat.completions.create({
     model: options.model,
     messages: [
       {
         role: "system",
         content:
-          "You are a helpful assistant who helps explain questions related to the contents of a file. You will start by giving a short explaination of the file and then answer any questions the user has.",
+          "You are a helpful assistant who helps summarize the contents of a file. Read the file and explain key details mentioned in the file. Explain what the file is used for, and what it's about.",
       },
       { role: "user", content: prompt },
     ],
@@ -46,12 +45,10 @@ async function explain(filePath, question, options) {
 
 export default function addAskToProgram(program) {
   program
-    .command("explain")
-    .description(
-      "Ask the model to explain a file's contents and answer questions about it."
-    )
-    .argument("<filePath>", "The file you want to ask the AI model about")
-    .argument("<question>", "The questions you want to ask the AI model")
+    .command("summarize")
+    .description("Summarize the contents of a file's contents")
+    .argument("<filePath>", "The file you want to summarize the contents of")
+    .option("-c, --context <context>", "Context to give about this file")
     .option("-o, --output <output>", "Output the response to a file")
     .option("-j, --json", "Output the response in JSON format")
     .addOption(
@@ -59,7 +56,7 @@ export default function addAskToProgram(program) {
         .choices(["gpt-4", "gpt-3.5-turbo"])
         .default("gpt-4")
     )
-    .action((filePath, question, options) => {
-      explain(filePath, question, options);
+    .action((filePath, options) => {
+      summarize(filePath, options);
     });
 }
