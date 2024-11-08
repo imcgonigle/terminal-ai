@@ -13,7 +13,7 @@ Terminal AI is a command-line interface (CLI) tool that allows you to utilize th
 
 ## Installation
 
-Execute the following command to install:
+Execute the following command to install dependencies:
 ```bash
 npm install
 ```
