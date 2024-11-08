@@ -1,5 +1,4 @@
 #!/usr/bin/env node
-import "dotenv/config";
 import fs from "fs";
 import path from "path";
 import OpenAI from "openai";
@@ -7,9 +6,11 @@ import figlet from "figlet";
 import { Command, Option } from "commander";
 import ora from "ora";
 
+import { config } from './config.js'
+
 const openai = new OpenAI({
-  apiKey: process.env.OPENAI_API_KEY,
-  organization: process.env.OPENAI_ORG_ID,
+  apiKey: config.OPENAI_API_KEY,
+  organization: config.OPENAI_ORG_ID,
 });
 
 async function speak(input, options) {
@@ -89,7 +90,7 @@ async function imagine(prompt, options) {
 
   spinner.info("Downloading the image");
 
-  fs.writeFile(filePath, image.data[0].b64_json, "base64", function (err) {
+  fs.writeFile(filePath, image.data[0].b64_json, "base64", function(err) {
     if (err) {
       spinner.error("An error occurred while writing the file");
       console.log(err);

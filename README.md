@@ -11,17 +11,18 @@ Terminal AI is a command-line interface (CLI) tool that allows you to utilize th
 - Node.js installed in the system
 - OpenAI API keys
 
-## Installation
+## Setup
 
-Execute the following command to install dependencies:
+Start by copying `config.example.js` to `config.js`
+```bash
+cp config.example.js config.js
+```
+
+Next you need to add your OpenAI API key to `config.js`.
+
+Then install dependencies:
 ```bash
 npm install
-```
-and put your OpenAI API key in a `.env` file:
-
-```bash
-OPENAI_API_KEY={your-api-key}
-OPENAI_ORG_ID={your-org-id}
 ```
 
 ### Installing Globally
