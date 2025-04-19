@@ -1,6 +1,6 @@
 import OpenAI from "openai";
 
-import config from "../../config.json" with {type: "json"};
+import { config } from "../../config.js";
 
 const openai = new OpenAI({
   apiKey: process.env.OPENAI_API_KEY || config.OPENAI_API_KEY,
