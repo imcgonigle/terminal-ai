@@ -46,7 +46,7 @@ async function summarize(filePath, options) {
 export default function addAskToProgram(program) {
   program
     .command("summarize")
-    .description("Summarize the contents of a file's contents")
+    .description("Summarize the contents of a file")
     .argument("<filePath>", "The file you want to summarize the contents of")
     .option("-c, --context <context>", "Context to give about this file")
     .option("-o, --output <output>", "Output the response to a file")
