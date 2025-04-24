@@ -3,3 +3,5 @@ node_modules
 temp
 config.js
 config.json
+
+chat-*.json

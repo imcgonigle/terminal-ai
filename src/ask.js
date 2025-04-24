@@ -6,7 +6,7 @@ import openai from "./utils/openai.js";
 
 import { personas } from "./config/personas.js";
 
-async function askGPT(question, options) {
+async function askGPT(question, options, info) {
   let prompt;
 
   let systemPrompt =
@@ -23,6 +23,10 @@ async function askGPT(question, options) {
     prompt = `Please read this input file and respond to the following prompt:\n\n${fileContent}\n\nPrompt: ${question}`;
   } else {
     prompt = question;
+  }
+
+  if (info.inputPipedToProgram) {
+    prompt += '\n\n---\n\n' + info.inputPipedToProgram
   }
 
   const stream = await openai.chat.completions.create({
@@ -54,7 +58,7 @@ async function askGPT(question, options) {
   }
 }
 
-export default function addAskToProgram(program) {
+export default function addAskToProgram(program, info) {
   program
     .command("ask")
     .description("Ask OpenAI's GPT-4 a question")
@@ -69,6 +73,6 @@ export default function addAskToProgram(program) {
         .default("gpt-4")
     )
     .action((question, options) => {
-      askGPT(question, options);
+      askGPT(question, options, info);
     });
 }

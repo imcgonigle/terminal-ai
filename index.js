@@ -18,15 +18,26 @@ program
   .description("A CLI tool to gererate content using various AI models")
   .version("0.1.0");
 
-setupAsk(program);
+const info = {}
+
+setupAsk(program, info);
 setupSpeak(program);
 setupImagine(program);
 setupTranscribe(program);
 setupChat(program);
 setupExplain(program);
 
-console.log(
-  gradient.retro(figlet.textSync("Terminal AI", { horizontalLayout: "full" }))
-);
+if (process.stdin.isTTY) {
+  console.log(
+    gradient.retro(figlet.textSync("Terminal AI", { horizontalLayout: "full" }))
+  );
+  program.parse();
+} else {
+  info.inputPipedToProgram = '';
+  process.stdin.setEncoding('utf8');
+  process.stdin.on('data', chunk => { info.inputPipedToProgram += chunk; });
+  process.stdin.on('end', () => {
+    program.parse();
+  });
+}
 
-program.parse();

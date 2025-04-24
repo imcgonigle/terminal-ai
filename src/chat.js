@@ -1,30 +1,30 @@
 import fs from "fs";
-import readline from "readline";
 import chalk from "chalk";
 import { Option } from "commander";
 
 import openai from "./utils/openai.js";
+import promptUser from "./utils/promptUser.js";
 import { personas } from "./config/personas.js";
 
 async function chat(options) {
   const { persona } = options;
-  const assitantPrompt =
+  const assistantPrompt = (persona) =>
     chalk.blue("AI ") + chalk.yellow(`(${persona ? persona : "Assistant"}):`);
   let systemPrompt = "You are a helpful assistant.";
 
-  if (options.persona) {
+  if (persona) {
     systemPrompt = personas.find(
-      (persona) => persona.name === options.persona
+      (p) => p.name === persona
     ).systemPrompt;
   }
 
   const messages = [{ role: "system", content: systemPrompt }];
 
-  console.log(assitantPrompt, "How can I help you today?");
+  console.log(assistantPrompt(persona), "How can I help you today?");
 
   if (options.output) {
     function writeArrayToFile() {
-      fs.writeFileSync(options.output, JSON.stringify(messages));
+      fs.writeFileSync(options.output, JSON.stringify(messages, null, 2));
       process.exit(); // It's important to exit the process manually, as writing to file is a sync operation
     }
 
@@ -39,27 +39,53 @@ async function chat(options) {
   }
 
   while (true) {
-    const input = await new Promise((resolve) => {
-      const rl = readline.createInterface({
-        input: process.stdin,
-        output: process.stdout,
-      });
+    const input = await promptUser(chalk.green("You: "));
 
-      rl.question(chalk.green("You: "), (answer) => {
-        rl.close();
-        resolve(answer);
-      });
-    });
+    if (input[0] === '/') {
+      const [command, ...commandArgs] = input.slice(1).split(' ')
+
+      if (command === 'exit') {
+        break
+      } if (command === 'process') {
+        const processingInstructions = await promptUser('Processing instructions: ')
+        const file = await promptUser('File name: ')
+
+        if (processingInstructions) {
+          const response = await openai.chat.completions.create({
+            model: "o4-mini",
+            messages: [
+              { role: "system", content: "Your job is to process chat logs. A user will provide you instructions on how to process the chat logs. Do Whatever they ask. You're response will be written to a file. It's important that your output is valid syntax for whatever fil you're writing." },
+              { role: 'user', content: processingInstructions + '\n\n---\n\n' + JSON.stringify(messages, null, 2) }
+            ],
+          });
+
+          if (file) {
+            fs.writeFileSync(file, response.choices[0].message.content);
+          }
+        } else {
+          console.log("No instructions provided")
+        }
+      } if (command === 'save') {
+        const file = commandArgs[0] || `chat-${Date.now()}.json`
+
+        if (file) {
+          fs.writeFileSync(file, JSON.stringify(messages, null, 2));
+        }
+      } else {
+        console.log('Command Not Found')
+      }
+      continue
+    }
 
     messages.push({ role: "user", content: input });
 
     const stream = await openai.chat.completions.create({
-      model: "gpt-4",
+      model: "o4-mini",
       messages,
       stream: true,
     });
 
-    process.stdout.write(assitantPrompt + " ");
+    process.stdout.write(assistantPrompt(persona) + " ");
 
     let response = "";
 
