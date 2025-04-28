@@ -1,5 +1,6 @@
 import fs from "fs";
 import ora from "ora";
+import terminalImage from "term-img";
 
 import openai from "./utils/openai.js";
 
@@ -16,7 +17,7 @@ async function imagine(prompt, options) {
     model: "dall-e-3",
     prompt,
     quality: options.hd ? "hd" : "standard",
-    response_format: options.output ? "b64_json" : "url",
+    response_format: "b64_json",
   });
 
   spinner.info("Downloading the image");
@@ -27,6 +28,13 @@ async function imagine(prompt, options) {
       console.log(err);
     } else {
       spinner.succeed("The images have been generated");
+
+      console.log(terminalImage(filePath, {
+        fallback: () => {
+          console.log('Unable to display images in your terminal')
+        }
+      }))
+
 
       if (options.verbose) {
         console.log(image.data[0].revised_prompt);
