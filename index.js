@@ -10,6 +10,7 @@ import setupImagine from "./src/imagine.js";
 import setupTranscribe from "./src/transcribe.js";
 import setupChat from "./src/chat.js";
 import setupExplain from "./src/explain.js";
+import setupGenerate from './src/generate.js'
 
 const program = new Command();
 
@@ -26,6 +27,7 @@ setupImagine(program);
 setupTranscribe(program);
 setupChat(program);
 setupExplain(program);
+setupGenerate(program, info)
 
 if (process.stdin.isTTY) {
   console.log(
