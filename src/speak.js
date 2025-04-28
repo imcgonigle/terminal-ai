@@ -2,6 +2,7 @@ import fs from "fs";
 import path from "path";
 import ora from "ora";
 import { Option } from "commander";
+import createPlayer from 'play-sound'
 
 import openai from "./utils/openai.js";
 
@@ -26,6 +27,12 @@ async function speak(input, options) {
   await fs.promises.writeFile(speechFile, buffer);
 
   spinner.succeed(`The audio has been saved to ${speechFile}`);
+
+  const player = createPlayer({})
+  player.play(speechFile, function (err) {
+    if (err) throw err
+  })
+
 }
 
 export default function addSpeakToProgram(program) {
