@@ -52,7 +52,7 @@ async function chat(options) {
 
         if (processingInstructions) {
           const response = await openai.chat.completions.create({
-            model: "o4-mini",
+            model: options.model,
             messages: [
               { role: "system", content: "Your job is to process chat logs. A user will provide you instructions on how to process the chat logs. Do Whatever they ask. You're response will be written to a file. It's important that your output is valid syntax for whatever fil you're writing." },
               { role: 'user', content: processingInstructions + '\n\n---\n\n' + JSON.stringify(messages, null, 2) }
@@ -80,7 +80,7 @@ async function chat(options) {
     messages.push({ role: "user", content: input });
 
     const stream = await openai.chat.completions.create({
-      model: "o4-mini",
+      model: options.model,
       messages,
       stream: true,
     });
@@ -103,14 +103,18 @@ async function chat(options) {
 export default function addChatToProgram(program) {
   program
     .command("chat")
-    .description("Chat with OpenAI's GPT-4")
-    .option("-m, --model <model>", "The model to use")
+    .description("Chat with OpenAI's GPT models")
     .option("-o, --output <output>", "Output the chat to a file in JSON format")
     .addOption(
       new Option(
         "-p --persona <persona>",
         "The persona the AI should take"
       ).choices(personas.map((persona) => persona.name))
+    )
+    .addOption(
+      new Option("-m, --model <model>", "The model to use")
+        .choices(["o4-mini", "gpt-4", "gpt-4o", "o3", "o1", "gpt-4.1"])
+        .default("o4-mini")
     )
     .action((options) => {
       chat(options);
