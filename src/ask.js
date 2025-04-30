@@ -69,8 +69,8 @@ export default function addAskToProgram(program, info) {
     .option("-p --persona <persona>", "The persona the AI should take")
     .addOption(
       new Option("-m, --model <model>", "The model to use")
-        .choices(["gpt-4", "gpt-3.5-turbo"])
-        .default("gpt-4")
+        .choices(["o4-mini", "gpt-4", "gpt-4o", "o3", "o1", "gpt-4.1", "gpt-3.5-turbo"])
+        .default("o4-mini")
     )
     .action((question, options) => {
       askGPT(question, options, info);
