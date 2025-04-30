@@ -17,8 +17,9 @@ async function speak(input, options) {
   const spinner = ora("Saving speech to file").start();
 
   const mp3 = await openai.audio.speech.create({
-    model: options.hd ? "tts-1-hd" : "tts-1",
+    model: options.model,
     voice: options.voice,
+    instructions: options.instructions,
     input: input,
   });
 
@@ -42,7 +43,12 @@ export default function addSpeakToProgram(program) {
     .argument("<text>", "The text you want to convert to speech")
     .option("-o, --output <output>", "The file to save the speech to")
     .option("-f, --file <file>", "The file to read the text from")
-    .option("-h, --hd", "Use the HD voice model")
+    .option("-i, --instructions <instructions>", "Instructions about tone and accent for the model to follow")
+    .addOption(
+      new Option("-m, --model <model>", "The model to use")
+        .choices(["gpt-4o-mini-tts", "tts-1-hd", "tts-1"])
+        .default("gpt-4o-mini-tts")
+    )
     .addOption(
       new Option("-v, --voice <voice>", "The voice to use")
         .choices(["alloy", "echo", "fable", "onyx", "nova", "shimmer"])
