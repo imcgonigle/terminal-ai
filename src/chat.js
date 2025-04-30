@@ -10,7 +10,7 @@ async function chat(options) {
   const { persona } = options;
   const assistantPrompt = (persona) =>
     chalk.blue("AI ") + chalk.yellow(`(${persona ? persona : "Assistant"}):`);
-  let systemPrompt = "You are a helpful assistant.";
+  let systemPrompt = "You are a helpful assistant designed to answer questions, explain complex topics in way that are easy to understand, and help users think through problems to arrive at the best solution.";
 
   if (persona) {
     systemPrompt = personas.find(
