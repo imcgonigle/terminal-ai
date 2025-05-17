@@ -1,11 +1,10 @@
 // Take a file and context and ask the AI model a question about it.
 import fs from "fs";
 import ora from "ora";
-import { Option } from "commander";
 
-import openai from "./utils/openai.js";
+import openai from "../../utils/openai.js";
 
-async function summarize(filePath, options) {
+export async function summarize(filePath, options) {
   let prompt;
 
   const fileContent = fs.readFileSync(filePath, "utf8");
@@ -43,20 +42,3 @@ async function summarize(filePath, options) {
   }
 }
 
-export default function addAskToProgram(program) {
-  program
-    .command("summarize")
-    .description("Summarize the contents of a file")
-    .argument("<filePath>", "The file you want to summarize the contents of")
-    .option("-c, --context <context>", "Context to give about this file")
-    .option("-o, --output <output>", "Output the response to a file")
-    .option("-j, --json", "Output the response in JSON format")
-    .addOption(
-      new Option("-m, --model <model>", "The model to use")
-        .choices(["gpt-4", "gpt-3.5-turbo"])
-        .default("gpt-4")
-    )
-    .action((filePath, options) => {
-      summarize(filePath, options);
-    });
-}

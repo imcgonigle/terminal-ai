@@ -1,12 +1,11 @@
 import fs from "fs";
 import chalk from "chalk";
-import { Option } from "commander";
 
-import openai from "./utils/openai.js";
-import promptUser from "./utils/promptUser.js";
-import { personas } from "./config/personas.js";
+import openai from "../../utils/openai.js";
+import promptUser from "../../utils/promptUser.js";
+import { personas } from "../../config/personas.js";
 
-async function chat(options) {
+export async function chat(options) {
   const { persona } = options;
   const assistantPrompt = (persona) =>
     chalk.blue("AI ") + chalk.yellow(`(${persona ? persona : "Assistant"}):`);
@@ -98,25 +97,4 @@ async function chat(options) {
     const aiMessage = { role: "assistant", content: response };
     messages.push(aiMessage);
   }
-}
-
-export default function addChatToProgram(program) {
-  program
-    .command("chat")
-    .description("Chat with OpenAI's GPT models")
-    .option("-o, --output <output>", "Output the chat to a file in JSON format")
-    .addOption(
-      new Option(
-        "-p --persona <persona>",
-        "The persona the AI should take"
-      ).choices(personas.map((persona) => persona.name))
-    )
-    .addOption(
-      new Option("-m, --model <model>", "The model to use")
-        .choices(["o4-mini", "gpt-4", "gpt-4o", "o3", "o1", "gpt-4.1"])
-        .default("o4-mini")
-    )
-    .action((options) => {
-      chat(options);
-    });
 }

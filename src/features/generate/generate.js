@@ -1,12 +1,11 @@
 import fs from "fs";
 import ora from "ora";
-import terminalImage from "term-img";
 
-import openai from "./utils/openai.js";
+import openai from "../../utils/openai.js";
 
 // Generates a file based on the user's request
 
-async function generate(request, options, info) {
+export async function generate(request, options, info) {
   let systemPrompt = ["You are a file generator. Your job is to create files based on a client's request. Make sure you only respond with valid content for the type of file that is requested.",
 
     "The client's requests may be vague but do your best to craft the best file you can. Go above and beyond to impress the client. Include comments in the file that explain to the client how and where to make any changes that would be required to complete the file. To be clear, your job is to complete the file as much as you possibly can given the client's request and leave comments only if you the changes are required to for the file complete to a highstandard and production ready.",
@@ -22,9 +21,9 @@ async function generate(request, options, info) {
       `The name of the file to be created is "${options.output}"`
     ] : []),
 
-    ...(info.inputPipedToProgram ? ["## Input (This)",
+    ...(info.pipedInput ? ["## Input (This)",
       `This is the subject of the client's request. Use this to complete the client's request. `,
-      info.inputPipedToProgram
+      info.pipedInput
     ] : [])
 
   ].join('\n')
@@ -54,14 +53,3 @@ async function generate(request, options, info) {
   spinner.succeed(`The response has been saved to ${fileName}`);
 }
 
-
-export default function addGenerateToProgram(program, info) {
-  program
-    .command("generate")
-    .description("Ask the AI to generate a file for you based on your request.")
-    .argument("<request>", "Your request for the contents of the file")
-    .option("-o, --output <output>", "Output the response to a file")
-    .action((request, options) => {
-      generate(request, options, info);
-    });
-}

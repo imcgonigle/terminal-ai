@@ -2,9 +2,9 @@ import fs from "node:fs/promises";
 import fssync from "node:fs";
 import ora from "ora";
 
-import openai from "./utils/openai.js";
+import openai from "../../utils/openai.js";
 
-async function transcribe(audioFile, options) {
+export async function transcribe(audioFile, options) {
   const spinner = ora("Transcribing audio").start();
 
   const transcription = await openai.audio.transcriptions.create({
@@ -23,15 +23,4 @@ async function transcribe(audioFile, options) {
   } else {
     console.log(transcription.text);
   }
-}
-
-export default function addTranscribeToProgram(program) {
-  program
-    .command("transcribe")
-    .description("Transcribe an audio file")
-    .argument("<audioFile>", "The audio file to transcribe")
-    .option("-o, --output <output>", "The file to save the transcription to")
-    .action((audioFile, options) => {
-      transcribe(audioFile, options);
-    });
 }

@@ -3,7 +3,7 @@
 
 generator client {
   provider = "prisma-client-js"
-  output   = "../src/generated/prisma"
+  url =  "file:./newdata.db?connection_limit=1"
 }
 
 datasource db {
@@ -11,17 +11,41 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+model Image {
+  id          String @id @default(cuid())
+  prompt      String
+  url         String
+  
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model Question {
+  id          String @id @default(cuid())
+  value       String
+  response    String
+  
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
 model Chat {
-  id        Int      @id @default(autoincrement())
-  name      String
-  createdAt DateTime @default(now())
-  messages Message[]
+  id          String   @id @default(cuid())
+  name        String
+  
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  
+  messages    Message[]
 }
 
 model Message {
-  id          Int      @id @default(autoincrement())
+  id          String      @id @default(cuid())
   value       String
+  
   createdAt   DateTime @default(now())
-  list        Chat     @relation(fields: [chatId], references: [id], onDelete: Cascade)
-  chatId      Int      // Foreign key
+  updatedAt   DateTime @updatedAt
+  
+  chat        Chat     @relation(fields: [chatId], references: [id], onDelete: Cascade)
+  chatId      String
 }

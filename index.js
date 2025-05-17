@@ -4,19 +4,19 @@ import gradient from "gradient-string";
 
 import { Command } from "commander";
 
-import setupSpeak from "./src/speak.js";
-import setupAsk from "./src/ask.js";
-import setupImagine from "./src/imagine.js";
-import setupTranscribe from "./src/transcribe.js";
-import setupChat from "./src/chat.js";
-import setupExplain from "./src/explain.js";
-import setupGenerate from './src/generate.js'
+import setupSpeak from "./src/features/speak/setup.js";
+import setupAsk from "./src/features/ask/setup.js";
+import setupImagine from "./src/features/imagine/setup.js";
+import setupTranscribe from "./src/features/transcribe/setup.js";
+import setupChat from "./src/features/chat/setup.js";
+import setupSummarize from "./src/features/summarize/setup.js";
+import setupGenerate from './src/features/generate/setup.js'
 
 const program = new Command();
 
 program
-  .name("terminal-ai")
-  .description("A CLI tool to gererate content using various AI models")
+  .name("ai")
+  .description("A CLI tool that makes it easy to use the latest AI models")
   .version("0.1.0");
 
 const info = {}
@@ -26,7 +26,7 @@ setupSpeak(program);
 setupImagine(program);
 setupTranscribe(program);
 setupChat(program);
-setupExplain(program);
+setupSummarize(program);
 setupGenerate(program, info)
 
 if (process.stdin.isTTY) {
@@ -35,9 +35,9 @@ if (process.stdin.isTTY) {
   );
   program.parse();
 } else {
-  info.inputPipedToProgram = '';
+  info.pipedInput = '';
   process.stdin.setEncoding('utf8');
-  process.stdin.on('data', chunk => { info.inputPipedToProgram += chunk; });
+  process.stdin.on('data', chunk => { info.pipedInput += chunk; });
   process.stdin.on('end', () => {
     program.parse();
   });
