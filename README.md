@@ -4,7 +4,7 @@
   <img src="./assets/banner.png" width="400" />
 </p>
 
-With Terminal AI can generate content (text, images and audio), ask questions, chat and run complex workflows straight from your terminal.
+With Terminal AI you can generate content (text, images and audio), ask questions, chat and run complex workflows straight from your terminal.
 
 ## Prerequisites
 
@@ -29,13 +29,11 @@ npm install
 
 ### Installing Globally
 
-Run `npm install -g` from the terminal-ai root directory. This makes the `terminal-ai` command available anywhere.
-
-_TIP:_ I like to set an alias in my .zshrc like so: `alias ai="terminal-ai"` so I don't have to type out "terminal-ai" every time.
+Run `npm install -g` from the terminal-ai root directory. This makes the `ai` command available anywhere.
 
 ## Usage
 
-`$ terminal-ai --help` for a full list of commands and how to use them
+`$ ai --help` for a full list of commands and how to use them
 
 ### Commands
 
