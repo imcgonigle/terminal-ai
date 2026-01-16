@@ -43,7 +43,7 @@ Run `npm install -g` from the terminal-ai root directory. This makes the `ai` co
 - speak - Generate speech from text
 - generate - Generate files from your instructions
 - transcribe - Transcribe an audio file
-- explain - Explain a file
+- summarize - Summarize teh contents of a file 
 
 ---
 
