@@ -4,8 +4,7 @@ import { personas } from "../../config/personas.js";
 
 import { chat } from "./chat.js";
 
-// Registers the `chat` subcommand, which starts an interactive multi-turn chat
-// session. Supports optional persona selection, output file, and model choice.
+// `chat` — interactive multi-turn conversation with optional persona and output file.
 export default function addChatToProgram(program) {
   program
     .command("chat")

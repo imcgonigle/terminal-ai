@@ -1,6 +1,5 @@
-// Predefined AI personas, each with a tailored system prompt that shapes the
-// model's tone and behavior. The `name` field is used as the CLI --persona
-// option value; the `systemPrompt` is sent as the system message to the API.
+// Available AI personas used by the --persona flag in `ask` and `chat`.
+// `name` is the CLI value; `systemPrompt` replaces the default system message.
 export const personas = [
   {
     name: "programmer",

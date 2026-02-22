@@ -3,12 +3,12 @@ import ora from "ora";
 
 import openai from "../../utils/openai.js";
 
-// Generates a complete file from a natural-language request using the AI.
-// The system prompt is built dynamically to give the model the output file name
-// and any piped input content as additional context.
+// Generates a complete file from a natural-language request and streams it to disk.
+// The system prompt is built dynamically to include the output filename and any
+// piped stdin so the model has full context when writing the file.
 export async function generate(request, options, info) {
-  // Build a structured system prompt that instructs the model to act as a file
-  // generator and provides all available context (output file name, piped input).
+  // Assemble the system prompt as a joined array of sections so additional
+  // context blocks (filename, piped input) can be appended conditionally.
   let systemPrompt = ["You are a file generator. Your job is to create files based on a client's request. Make sure you only respond with valid content for the type of file that is requested.",
 
     "The client's requests may be vague but do your best to craft the best file you can. Go above and beyond to impress the client. Include comments in the file that explain to the client how and where to make any changes that would be required to complete the file. To be clear, your job is to complete the file as much as you possibly can given the client's request and leave comments only if you the changes are required to for the file complete to a highstandard and production ready.",
@@ -19,14 +19,13 @@ export async function generate(request, options, info) {
     "# Context",
     "This section contains all the information you have to create the clien'ts request.",
 
-    // Include the intended output file name so the model can infer file type and
-    // structure (e.g. a .json file should contain valid JSON).
+    // Include the filename so the model can infer the required format (e.g. .json → valid JSON).
     ...(options.output ? [
       "## File Name",
       `The name of the file to be created is "${options.output}"`
     ] : []),
 
-    // Include piped stdin as the subject matter the generated file should relate to.
+    // Include piped stdin as the subject the generated file should be based on.
     ...(info.pipedInput ? ["## Input (This)",
       `This is the subject of the client's request. Use this to complete the client's request. `,
       info.pipedInput
@@ -36,8 +35,8 @@ export async function generate(request, options, info) {
 
   console.log(systemPrompt)
 
-  // Stream the generated file content from the API so large files don't require
-  // waiting for the entire response before writing begins.
+  // Stream the output so large files start writing immediately without waiting
+  // for the full response.
   const stream = await openai.chat.completions.create({
     model: "o4-mini",
     messages: [
@@ -48,12 +47,10 @@ export async function generate(request, options, info) {
     stream: true,
   });
 
-  // Default to a timestamped markdown file when no output path is given.
-  const fileName = options.output || `generated-${Date.now()}.md`
+  const fileName = options.output || `generated-${Date.now()}.md` // default: timestamped markdown
   const spinner = ora("Generating file").start();
   const file = fs.createWriteStream(fileName);
 
-  // Write each streamed token directly to the file as it arrives.
   for await (const chunk of stream) {
     file.write(chunk.choices[0]?.delta?.content || "");
   }

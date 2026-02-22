@@ -1,8 +1,7 @@
 import { Option } from "commander";
 import { summarize } from "./summarize.js";
 
-// Registers the `summarize` subcommand, which reads a file and asks the AI to
-// summarize its contents.
+// `summarize` — reads a file and asks the AI to summarize its contents.
 export default function addSummarizeToProgram(program) {
   program
     .command("summarize")

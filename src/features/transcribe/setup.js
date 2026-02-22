@@ -1,7 +1,6 @@
 import { transcribe } from "./transcribe.js";
 
-// Registers the `transcribe` subcommand, which converts an audio file to text
-// using OpenAI's Whisper model.
+// `transcribe` — converts an audio file to text using OpenAI's Whisper model.
 export default function addTranscribeToProgram(program) {
   program
     .command("transcribe")

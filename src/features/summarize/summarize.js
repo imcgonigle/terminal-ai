@@ -1,18 +1,15 @@
-// Reads a file and asks the AI to summarize its contents.
+// Reads a file and streams an AI summary to stdout or an output file.
 import fs from "fs";
 import ora from "ora";
 
 import openai from "../../utils/openai.js";
 
-// Reads the given file, sends its content to the AI for summarization, and
-// streams the response. Output is written to a file when --output is set,
-// otherwise printed directly to stdout.
 export async function summarize(filePath, options) {
   let prompt;
 
   const fileContent = fs.readFileSync(filePath, "utf8");
 
-  // Embed the raw file content in the prompt so the model can read it.
+  // Embed the file contents directly in the prompt so the model can read them.
   prompt = `Please read this file and summarize the contents:\n\n${fileContent}\n\n`;
   const stream = await openai.chat.completions.create({
     model: options.model,
@@ -31,7 +28,7 @@ export async function summarize(filePath, options) {
     const spinner = ora("Saving response to file").start();
     const file = fs.createWriteStream(options.output);
 
-    // Write each streamed chunk directly to the output file.
+    // Stream each chunk straight to the file.
     for await (const chunk of stream) {
       file.write(chunk.choices[0]?.delta?.content || "");
     }
@@ -41,7 +38,7 @@ export async function summarize(filePath, options) {
     spinner.succeed(`The response has been saved to ${options.output}`);
     return;
   } else {
-    // Print each token to stdout as it arrives for a real-time feel.
+    // Print tokens to stdout as they arrive for a live-typing effect.
     for await (const chunk of stream) {
       process.stdout.write(chunk.choices[0]?.delta?.content || "");
     }
