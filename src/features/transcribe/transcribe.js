@@ -4,9 +4,12 @@ import ora from "ora";
 
 import openai from "../../utils/openai.js";
 
+// Transcribes an audio file to text using the OpenAI Whisper model.
+// Prints the result to stdout or saves it to a file when --output is set.
 export async function transcribe(audioFile, options) {
   const spinner = ora("Transcribing audio").start();
 
+  // The Whisper API accepts common formats: mp3, mp4, wav, webm, and more.
   const transcription = await openai.audio.transcriptions.create({
     file: fssync.createReadStream(audioFile),
     model: "whisper-1",

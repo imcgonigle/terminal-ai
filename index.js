@@ -19,8 +19,11 @@ program
   .description("A CLI tool that makes it easy to use the latest AI models")
   .version("0.1.0");
 
+// Bag for data that needs to cross the entry-point/command boundary.
+// ask and generate read info.pipedInput to access text piped through stdin.
 const info = {}
 
+// Register all subcommands. ask and generate receive `info` to read piped stdin.
 setupAsk(program, info);
 setupSpeak(program);
 setupImagine(program);
@@ -30,11 +33,15 @@ setupSummarize(program);
 setupGenerate(program, info)
 
 if (process.stdin.isTTY) {
+  // Interactive terminal — show the banner and run immediately.
   console.log(
     gradient.retro(figlet.textSync("Terminal AI", { horizontalLayout: "full" }))
   );
   program.parse();
 } else {
+  // Piped stdin (e.g. `cat file.txt | ai ask "summarize this"`).
+  // Buffer all input into info.pipedInput before parsing so commands can
+  // read it synchronously when they execute.
   info.pipedInput = '';
   process.stdin.setEncoding('utf8');
   process.stdin.on('data', chunk => { info.pipedInput += chunk; });

@@ -5,13 +5,16 @@ import createPlayer from 'play-sound'
 
 import openai from "../../utils/openai.js";
 
+// Converts text to speech via the OpenAI TTS API, saves the audio as an MP3,
+// and plays it immediately through the system's default audio player.
 export async function speak(input, options) {
+  // Read from a file instead of the CLI argument when --file is set.
   if (options.file) {
     input = fs.readFileSync(options.file, "utf8");
   }
 
   const output = options.output;
-  const speechFile = path.resolve(output ? output : "./speech.mp3");
+  const speechFile = path.resolve(output ? output : "./speech.mp3"); // defaults to ./speech.mp3
 
   const spinner = ora("Saving speech to file").start();
 
@@ -22,12 +25,14 @@ export async function speak(input, options) {
     input: input,
   });
 
+  // The response body is raw audio bytes — convert to a Buffer before writing.
   const buffer = Buffer.from(await mp3.arrayBuffer());
 
   await fs.promises.writeFile(speechFile, buffer);
 
   spinner.succeed(`The audio has been saved to ${speechFile}`);
 
+  // Play the file using whatever audio player is available on the OS.
   const player = createPlayer({})
 
   player.play(speechFile, function (err) {

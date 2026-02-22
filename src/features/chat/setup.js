@@ -4,7 +4,7 @@ import { personas } from "../../config/personas.js";
 
 import { chat } from "./chat.js";
 
-
+// `chat` — interactive multi-turn conversation with optional persona and output file.
 export default function addChatToProgram(program) {
   program
     .command("chat")

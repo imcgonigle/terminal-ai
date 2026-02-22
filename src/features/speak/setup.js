@@ -1,6 +1,7 @@
 import { Option } from "commander";
 import { speak } from "./speak.js";
 
+// `speak` — converts text (or a file's contents) to speech and plays the audio.
 export default function addSpeakToProgram(program) {
   program
     .command("speak")

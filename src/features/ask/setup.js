@@ -1,6 +1,8 @@
 import { Option } from "commander";
 import { ask } from './ask.js'
 
+// `ask` — sends a single question to the AI and streams the answer.
+// `info` is passed so the command can read any text piped through stdin.
 export default function addAskToProgram(program, info) {
   program
     .command("ask")

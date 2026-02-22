@@ -1,3 +1,5 @@
+// Available AI personas used by the --persona flag in `ask` and `chat`.
+// `name` is the CLI value; `systemPrompt` replaces the default system message.
 export const personas = [
   {
     name: "programmer",

@@ -2,6 +2,7 @@ import { Option } from "commander";
 
 import { imagine } from "./imagine.js";
 
+// `imagine` — generates or edits an image from a text prompt and displays it in the terminal.
 export default function addImagineToProgram(program) {
   program
     .command("imagine")

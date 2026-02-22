@@ -1,5 +1,7 @@
 import { generate } from "./generate.js";
 
+// `generate` — creates a complete file from a natural-language request.
+// `info` is passed so the command can include piped stdin as additional context.
 export default function addGenerateToProgram(program, info) {
   program
     .command("generate")

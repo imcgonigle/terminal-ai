@@ -1,4 +1,4 @@
-// Take a file and context and ask the AI model a question about it.
+// Reads a file and streams an AI summary to stdout or an output file.
 import fs from "fs";
 import ora from "ora";
 
@@ -9,6 +9,7 @@ export async function summarize(filePath, options) {
 
   const fileContent = fs.readFileSync(filePath, "utf8");
 
+  // Embed the file contents directly in the prompt so the model can read them.
   prompt = `Please read this file and summarize the contents:\n\n${fileContent}\n\n`;
   const stream = await openai.chat.completions.create({
     model: options.model,
@@ -27,6 +28,7 @@ export async function summarize(filePath, options) {
     const spinner = ora("Saving response to file").start();
     const file = fs.createWriteStream(options.output);
 
+    // Stream each chunk straight to the file.
     for await (const chunk of stream) {
       file.write(chunk.choices[0]?.delta?.content || "");
     }
@@ -36,6 +38,7 @@ export async function summarize(filePath, options) {
     spinner.succeed(`The response has been saved to ${options.output}`);
     return;
   } else {
+    // Print tokens to stdout as they arrive for a live-typing effect.
     for await (const chunk of stream) {
       process.stdout.write(chunk.choices[0]?.delta?.content || "");
     }
