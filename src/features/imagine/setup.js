@@ -2,6 +2,8 @@ import { Option } from "commander";
 
 import { imagine } from "./imagine.js";
 
+// Registers the `imagine` subcommand, which generates or edits images using
+// the OpenAI images API and displays the result in the terminal.
 export default function addImagineToProgram(program) {
   program
     .command("imagine")

@@ -1,5 +1,8 @@
 import { generate } from "./generate.js";
 
+// Registers the `generate` subcommand, which uses the AI to create a complete
+// file from a natural-language request. The shared `info` object is forwarded
+// so the command can incorporate any text piped into the process via stdin.
 export default function addGenerateToProgram(program, info) {
   program
     .command("generate")
