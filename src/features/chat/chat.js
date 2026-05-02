@@ -43,9 +43,15 @@ export async function chat(options) {
     if (input[0] === '/') {
       const [command, ...commandArgs] = input.slice(1).split(' ')
 
-      if (command === 'exit') {
+      if (command === 'help') {
+        console.log(chalk.yellow('Available commands:'));
+        console.log('  /help            - Show this help message');
+        console.log('  /save [file]     - Save chat to a JSON file');
+        console.log('  /process         - Process chat logs with AI');
+        console.log('  /exit            - Exit the chat');
+      } else if (command === 'exit') {
         break
-      } if (command === 'process') {
+      } else if (command === 'process') {
         const processingInstructions = await promptUser('Processing instructions: ')
         const file = await promptUser('File name: ')
 
@@ -64,7 +70,7 @@ export async function chat(options) {
         } else {
           console.log("No instructions provided")
         }
-      } if (command === 'save') {
+      } else if (command === 'save') {
         const file = commandArgs[0] || `chat-${Date.now()}.json`
 
         if (file) {

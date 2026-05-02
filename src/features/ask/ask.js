@@ -32,6 +32,7 @@ export async function ask(question, options, info) {
       process.stdout.write(chunk.choices[0]?.delta?.content || "");
       response += chunk.choices[0]?.delta?.content || ""
     }
+    process.stdout.write("\n");
   }
 
   await prisma.question.create({
